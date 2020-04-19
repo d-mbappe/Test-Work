@@ -1,9 +1,9 @@
 <template>
 	<div>
-	<h1>Check List</h1>
+	<!-- <h1>Check List</h1>
     <p>Для изменения задачи кликните по ней 2 раза. Для подтверждения нажмите Enter</p>
     <h4> Список задач</h4>
-    <ul v-for="(task,index) in taskList" class="task-list" :key="index"> 
+    <u v-for="(task,index) in taskList" class="task-list" :key="index"> 
         <li  class="task-check"> 
 
         <input  v-if="!task.checkedTask" type="checkbox" v-model="task.checkedTask" class="task-check__checkbox"> 
@@ -16,14 +16,32 @@
         </li>
 
 
-      </ul>
+      </u>
       
       <label for=""><b>Add new Task: </b></label>
 
       <input type="text" placeholder="Enter new task" v-model="newTask" @keyup.enter="addTask" style="width: 50%;"> 
       <button @click="addTask()" class="btn btn-primary line">
         Add
-      </button>  
+      </button>   -->
+<h1>Check List</h1>
+      <div class="note">
+        <div class="note-item"
+              v-for="note in notesList"
+              :key="note.id"
+        >
+          <h2 class="note-title"> {{note.title}} </h2>
+          <div class="note-todos"
+              v-for="(todo, index) in note.todos"
+              :key="index"
+            >
+              <p v-if="index <=1 "> {{todo.text}} </p>
+              <p v-else> ... </p>
+          </div>
+          <button @click="goTo(note.title)">More</button>
+
+        </div>
+      </div>
     </div>
 </template>
 
@@ -33,7 +51,8 @@
 
         data: function() {
             return {
-						newTask:'',
+            newTask:'',
+            current: '/current-note'
             // taskList: [
             //     {text:'First - Lorem ipsum dolor sit amet, consectetur adipisicing elit.', checkedTask: false, changeTask: false},
             //     {text:'Second - Lorem ipsum dolor sit amet, consectetur adipisicing elit.', checkedTask: false, changeTask: false},
@@ -48,48 +67,39 @@
             }
 				},
 				computed: {
-					taskList: function() {
-						return this.$store.getters.TODOS;
+					notesList: function() {
+						return this.$store.getters.NOTES;
 					}
 				},
 				
-				// mounted() {
-				// 	if(localStorage.taskList) {
-				// 		this.taskList = localStorage.taskList
-				// 	}
-				// },
-				// watch : {
-				// 	taskList(newTaskList) {
-				// 		localStorage.taskList = newTaskList;
-				// 	}
-				// },
-				
-
         methods: {
-            addTask: function(value) {
-            value = this.newTask;
-            this.taskList.push({
-                text: value,
-                checkedTask:false,
-                changeTask: false
-            }),
+          goTo(noteTitle) {
+            this.$router.push({ name:'CurrentNote', params:{title: noteTitle} });
+          },
 
-            this.newTask = ''
-            },
+            // addTask: function(value) {
+            // value = this.newTask;
+            // this.taskList.push({
+            //     text: value,
+            //     checkedTask:false,
+            //     changeTask: false
+            // }),
 
-            deleteTask: function(index) {
-								// this.taskList.splice(index, 1)
-								this.$store.commit('SET_TODO', index)
+            // this.newTask = ''
+            // },
+
+            // deleteTask: function(index) {
+						// 		this.$store.commit('DELETE_TODO', index)
 								
-            },
+            // },
             
-            editTask: function(index) {
-                this.taskList[index].changeTask = !this.taskList[index].changeTask;
-            },
+            // editTask: function(index) {
+            //     this.taskList[this.current].changeTask = !this.taskList[index].changeTask;
+            // },
         }
     }
 </script>
 
 <style lang="scss" scoped>
-
+  
 </style>

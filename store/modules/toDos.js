@@ -16,12 +16,11 @@ const state = {
     TODOS: state => {
       return state.todos;
     },
+    
   };
   
   const mutations = {
-    DELETE_TODO: (state, index) => {
-      state.todos.splice(index, 1)
-    },
+    
   
     ADD_TODO: (state, payload) => {
       state.todos.push(payload);

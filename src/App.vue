@@ -1,22 +1,22 @@
 <template>
   <div id="app">
-    <NotesList/>
-
+    <!-- <NotesList/> -->
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import NotesList from './components/NotesList'
+// import NotesList from './components/NotesList'
 
 export default {
   name: 'App',
-  components: {
-    NotesList
-  }
+  // components: {
+  //   NotesList
+  // }
 }
 </script>
 
-<style>
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -25,4 +25,10 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+.note-item {
+    width: 70%;
+    margin: 5px auto;
+    border: 1px solid #ccc;
+  }
 </style>
