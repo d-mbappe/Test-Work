@@ -8,7 +8,9 @@
               v-if="noteTitle == note.title"
               :current=" noteTitle == note.title ? current = index : ''"
           >
-            <h2 class="note-title"> {{note.title}} </h2>
+            <div class="note-title">
+              <h2> {{note.title}} </h2>
+            </div>
 
             <div class="note-todos"
                 v-for="(todo, index) in note.todos"
@@ -24,16 +26,12 @@
                         v-model="todo.text"
                 >
 
-                <button>delete</button>
-
-                <button @click="editTodo(index)"
-                        v-if="!todo.change"
-                >change
-                </button>
-                <button v-else
-                        @click="saveTodo(index)"
-                > save
-                </button>
+                <div class="note-btn">
+                  <button @click="removeTodo(index)">remove</button>
+                  <button @click="editTodo(index)">
+                    {{todo.change ? 'save' : 'change'}}
+                  </button>
+                </div>
                 
             </div>
         <div class="note-input">
@@ -42,6 +40,10 @@
           >
           <button @click="addTodo()">add</button>
         </div>
+
+        <button @click="saveChanges()">Save Note</button>
+        <br>
+        <button @click="removeNote()">Remove Note</button>
 
         </div>
 
@@ -58,29 +60,26 @@ import { mapGetters } from 'vuex';
     data() {
       return{
         noteTitle: this.$route.params.title,
-        current: '',
-        newTodo:''
+        current: '', // id текущей заметки
+        newTodo:'',
+        newTitle:''
       }
     },
 
     computed: {
+      //массив заметок
       notesList() {
         return this.$store.getters.NOTES;
       },
 
-      // ...mapState({
-      //   notesList: 'notes'
-      // }),
-
       ...mapGetters([
-            'CURRENT_NOTE'
+            'CURRENT_NOTE',
         ]),
-
+      //текущая заметка
       currentNote() {
-        
         return this.CURRENT_NOTE(this.current);
+      },
 
-      }
     },
     
     methods: {
@@ -89,26 +88,52 @@ import { mapGetters } from 'vuex';
         this.currentNote.todos[index].change = !this.currentNote.todos[index].change;
       },
 
-      addTodo: function() {
-            this.currentNote.todos.push({
-                text: this.newTodo,
-                checked:false,
-                change: false
-            }),
-
-            this.newTodo= ''
+      addTodo() {
+        if(this.newTodo != '') {
+          this.currentNote.todos.push({
+            text: this.newTodo,
+            checked:false,
+            change: false
+          }),
+          this.newTodo= ''
+        }
+        
       },
 
-      saveTodo(index) {
-        // let key = this.current;
-        this.currentNote.todos[index].change = !this.currentNote.todos[index].change;
-        // this.$store.commit('SAVE_TODO', key, index)
+      removeTodo(index) {
+        this.currentNote.todos.splice(index, 1)
+      },
+
+      changeTitle() {
+        this.newTitle = '.'
+        this.$store.commit('CHANGE_TITLE', this.current, this.newTitle)
+      },
+
+      saveChanges() {
+        this.$store.commit('SAVE_CHANGES', this.currentNote)
+        this.$router.push({ name:'NotesList'});
+      },
+
+      removeNote() {
+        this.$store.commit('REMOVE_NOTE', this.current)
+        this.$router.push({ name:'NotesList'});
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
+  .note-title {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+
+    & button {
+      margin-left: 5px;
+      height: 25px;
+    }
+  }
+
   .note-todos {
     height: 50px;
     display: flex;

@@ -27,8 +27,9 @@ export default {
 }
 
 .note-item {
-    width: 70%;
-    margin: 5px auto;
-    border: 1px solid #ccc;
-  }
+  width: 70%;
+  min-height: 200px;
+  margin: 5px auto;
+  border: 1px solid #ccc;
+}
 </style>

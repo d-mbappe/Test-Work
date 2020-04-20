@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 const state = {
   notes: [
     { title:'home',
@@ -24,10 +26,11 @@ const state = {
         {text:'Second - Lorem ipsum dolor sit amet, consectetur adipisicing elit.', checked: false, change: false},
         {text:'Third - Lorem ipsum dolor sit amet, consectetur adipisicing elit.', checked: false, change: false},
       ],
-      id: 2
-    },
+      id: 2,
+    }
+  ],
 
-  ]
+  current: '',
 };
 
 const getters = {
@@ -38,16 +41,27 @@ const getters = {
   CURRENT_NOTE: (state) => (id) => {
     return state.notes[id]
   },
+
 };
 
 const mutations = {
-  // CURRENT_NOTE: (state, key) => {
-  //   return state.notes[key]
-  // },
+  ADD_NOTE: (statem, title) => {
+    state.notes.push({
+      title: title,
+      todos: [],
+      id: state.notes.length
+    })
+  },
 
-  SAVE_TODO: (state, key, index) => {
-    return state.notes[key].todos[index]
-  }
+
+  SAVE_CHANGES: (state, note) => {
+    Vue.set(state.notes, 'title', note.title)
+    Vue.set(state.notes, 'todos', note.todos)
+  },
+
+  REMOVE_NOTE: (state, id) => {
+    state.notes.splice(id, 1)
+  },
 }
 
 export default {
