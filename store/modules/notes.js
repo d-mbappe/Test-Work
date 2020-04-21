@@ -45,7 +45,7 @@ const getters = {
 };
 
 const mutations = {
-  ADD_NOTE: (statem, title) => {
+  NEW_NOTE: (state, title) => {
     state.notes.push({
       title: title,
       todos: [],
@@ -53,14 +53,37 @@ const mutations = {
     })
   },
 
-
-  SAVE_CHANGES: (state, note) => {
-    Vue.set(state.notes, 'title', note.title)
-    Vue.set(state.notes, 'todos', note.todos)
+  SET_DATA: (state, payload) => {
+    Vue.set(state.notes[payload.id], 'id', payload.id)
+    Vue.set(state.notes[payload.id], 'title', payload.title)
+    Vue.set(state.notes[payload.id], 'todos', payload.todos)
   },
+
+  // SAVE_CHANGES: (state, payload) => {
+  //   delete state.notes[payload.id].title;
+  //   delete state.notes[payload.id].todos;
+  //   delete state.notes[payload.id].id;
+
+  //   // state.notes[id] = {...state.notes[id], id: id}
+    
+  // },
 
   REMOVE_NOTE: (state, id) => {
     state.notes.splice(id, 1)
+  },
+};
+
+const actions = {
+  SAVE_CHANGES: ({commit, state}, payload) => {
+    delete  state.notes[payload.id].title;
+    delete  state.notes[payload.id].todos;
+    delete  state.notes[payload.id].id;
+    commit('SET_DATA', payload)
+  },
+
+  ADD_NOTE: ({commit, state}, payload) => {
+    state.notes.push({})
+    commit('SET_DATA', payload)
   },
 }
 
@@ -68,5 +91,5 @@ export default {
   state,
   getters,
   mutations,
-  // actions,
+  actions,
 };

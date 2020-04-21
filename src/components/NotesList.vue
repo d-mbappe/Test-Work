@@ -3,7 +3,7 @@
   <h1>Notes List</h1>
       <div class="note">
         <div class="note-item"
-              v-for="(note) in notesList"
+              v-for="(note, id) in notesList"
               :key="note.id"
         >
           <h2 class="note-title"> {{note.title}} </h2>
@@ -12,35 +12,41 @@
                 :key="id"
             >
               <p v-if="id <=1 "
-                  :class="todo.checked ? 'cheched-todo' : ''"
+                  :class="todo.checked ? 'checked-todo' : ''"
                 > {{todo.text}} </p>
           <p v-if="id > 1 && id < 3">...</p>
               
           </div>
-          <button @click="goTo(note.title)">More</button>
+          <button @click="goTo(note.title)">Edit</button>
+          <button @click="getNote(id)">Remove</button>
         </div>
-
       </div>
-      <input type="text" placeholder="Note title" v-model="newTitle">
       <button @click="addNote()">Add note</button>
 
+      <!-- Модальное окно -->
+      <modalWindow v-if="showModal" 
+                    @agree="removeNote" 
+                    @disagree="showModal = false"
+      >  </modalWindow>
     </div>
 </template>
 
 <script>
+import modalWindow from './modalWindow'
     export default {
         name: 'NotesList',
-
+        components: {modalWindow},
         data() {
             return {
-            current: '/current-note',
-            newTitle: '',
+              current: '/current-note',
+              showModal: false,
+              currentId: ''// хранит id заметки для удаления
             }
 				},
 				computed: {
-					notesList: function() {
+					notesList() {
 						return this.$store.getters.NOTES;
-					}
+          },
 				},
 				
         methods: {
@@ -50,17 +56,27 @@
 
           addNote() {
             if(this.newTitle != '') {
-              this.$store.commit('ADD_NOTE', this.newTitle,)
-              this.$router.push({ name:'CurrentNote', params:{title: this.newTitle } });
+              this.$router.push({ name:'NewNote'});
             }
           },
-        }
+
+          getNote(id) {
+            this.currentId = id
+            this.showModal = !this.showModal; 
+          },
+
+          removeNote() {
+            this.$store.commit('REMOVE_NOTE', this.currentId)
+            this.showModal = false
+          },
+        
+      }
     }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
 
-  .cheched-todo {
+  .checked-todo {
     color: #8de98d;
   }
 </style>
