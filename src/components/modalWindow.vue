@@ -20,12 +20,14 @@
 
           <div class="modal-footer">
             <slot name="footer">
-              <button class="modal-default-button" @click="$emit('agree')">
-                Yes
-              </button>
-              <button class="modal-default-button" @click="$emit('disagree')">
-                No
-              </button>
+              <div class="modal-buttons">
+                <button class="add" @click="$emit('agree')">
+                  Yes
+                </button>
+                <button class="remove" @click="$emit('disagree')">
+                  No
+                </button>
+              </div>
             </slot>
           </div>
         </div>

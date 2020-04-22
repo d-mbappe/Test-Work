@@ -3,22 +3,22 @@
     <h2>New Note</h2>
 
     <div class="note-item">
-
-      <div v-if="!changeTitle">
-        <p v-if="errorTitle">Title don`t be empty</p>
+      <!-- Title -->
+      <div v-if="!changeTitle" class="hide-title">
         <input type="text" 
                 placeholder="Title"
                 v-model="newTitle"
                 @keyup.enter="saveTitle()" 
         >
-        <button @click="saveTitle()">Save</button>
+        <button class="edit" @click="saveTitle()">Save</button>
       </div>
-
       <div v-else class="note-title">
         <h2>{{newTitle}}</h2>
-        <button @click="changeTitle = !changeTitle">change</button>
+        <button class="edit" @click="changeTitle = !changeTitle">
+          <font-awesome-icon icon="edit" />
+        </button>
       </div>
-
+      <!-- Todos -->
       <div class="note-todosArray"
               v-for="(todo, index) in todosArray"
               :key="index"
@@ -28,43 +28,64 @@
                 v-model="todo.checked"
         >
         <p v-if="!todo.change"> {{todo.text}} </p>
-        <input type="text"
+        <input class="note-input"
+                type="text"
                 v-else 
                 v-model="todo.text"
+                @keyup.enter="editTodo(index)"
         >
-
+        <!-- Buttons Todo -->
         <div class="note-btn">
-          <button @click="removeTodo(index)">remove</button>
-          <button @click="editTodo(index)">
-            {{todo.change ? 'save' : 'change'}}
+          <button class="edit" @click="editTodo(index)">
+            {{todo.change ? 'Save' : ''}}
+            <font-awesome-icon icon="edit" />
+          </button>
+          <button class="remove" @click="removeTodo(index)">
+            <font-awesome-icon icon="minus" />
           </button>
         </div>
-              
-        </div>
-      <div class="note-input">
-        <input type="text"
-                placeholder="Input text"
-                v-model="newTodo"
-        >
-        <button @click="addTodo()">add</button>
-
       </div>
+    <!-- Input -->
+    <div class="note-input">
+      <input type="text"
+              placeholder="Input text"
+              v-model="newTodo"
+              @keyup.enter="addTodo()"
+      >
+      <button class="add" @click="addTodo()">
+        <font-awesome-icon icon="plus" />
+      </button>
     </div>
-        <button @click="addNote()">ADD note</button>
-
+    </div>
+    <button class="add" @click="addNote()">
+    Add Note
+    <font-awesome-icon icon="plus" />
+    </button>
+    <!-- Modal Window-->
+    <modalWindow v-if="showModal" 
+                @agree="addNote()" 
+                @disagree="showModal = false"
+    >
+      <h3 slot="header"> Empty </h3>
+      <p slot="body"> The note can't be empty </p>
+    </modalWindow>
   </div>
 </template>
 
 <script>
+import modalWindow from './modalWindow'
+
   export default {
     name: 'NewNote',
+    components: {modalWindow},
+    
     data() {
       return {
         newTitle:'',
-        errorTitle: false,
         changeTitle: false,
         todosArray: [],
         newTodo: '',
+        showModal: false,
       }
     },
     computed: {
@@ -79,9 +100,7 @@
         if(this.newTitle != '') {
           this.changeTitle = !this.changeTitle 
           this.errorTitle ? this.errorTitle = false : ''
-        } else {
-          this.errorTitle = true
-        }
+        } 
       },
 
       editTodo(index) {
@@ -116,16 +135,26 @@
         });
           this.$router.push({ name:'NotesList'});
         } else {
-          alert('no')
+          this.showModal = !this.showModal
         }
-        
       }
-
     }
   }
 </script>
 
 <style lang="scss" scoped>
+.note-item {
+  padding-bottom: 50px; 
+}
+.hide-title {
+  width: 30%;
+  display: flex;
+  align-items: baseline;
+    input {
+      height: 15px;
+    }
+}
+
 .note-title {
   margin: 0 auto;
   h2 {
@@ -138,26 +167,55 @@
 }
 
 .note-todosArray {
-    height: 50px;
-    display: flex;
-    align-items: center;
+  width: 80%;
+  margin: 0 auto;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin: 10px;
+  padding: 5px;
+  
 
-    margin: 10px;
-    padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 30px;
 
-    border: 1px solid #ccc;
-    border-radius: 30px;
-
-      input {
-        margin: 0 10px;
-        &[type='text'] {
-          width: 65%;
-          padding: 10px;
-        }
+    input {
+      margin: 0 10px;
+      &[type='text'] {
+        height: 15px;
+        position: absolute;
+        top: 10px;
+        left: 50px;
+        width: 65%;
+        padding: 10px;
       }
+    }
 
-      button {
-        margin: 0 10px;
-      }
-  }
+    .note-btn {
+      position: absolute;
+      right:  0;
+    }
+
+    button {
+      margin: 0 10px;
+    }
+}
+
+.note-input {
+  width:80%;
+  margin: 0 auto;
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+    input {
+      height: 15px;
+    }
+}
+
+.done {
+  background-color: #cacaca;
+}
 </style>

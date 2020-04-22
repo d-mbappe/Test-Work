@@ -14,16 +14,18 @@
               <p v-if="id <=1 "
                   :class="todo.checked ? 'checked-todo' : ''"
                 > {{todo.text}} </p>
-          <p v-if="id > 1 && id < 3">...</p>
+              <p v-if="id > 1 && id < 3">...</p>
               
           </div>
-          <button @click="goTo(note.title)">Edit</button>
-          <button @click="getNote(id)">Remove</button>
+          <div class="note-btn">
+            <button class="edit" @click="goTo(note.id, note.title)" >Edit <font-awesome-icon icon="edit" /></button>
+            <button class="remove-note" @click="getNote(id)"><font-awesome-icon icon="trash" /></button>
+          </div>
         </div>
       </div>
-      <button @click="addNote()">Add note</button>
+      <button class="add" @click="addNote()">Add <font-awesome-icon icon="plus" /></button>
 
-      <!-- Модальное окно -->
+      <!-- Modal Window -->
       <modalWindow v-if="showModal" 
                     @agree="removeNote" 
                     @disagree="showModal = false"
@@ -50,8 +52,9 @@ import modalWindow from './modalWindow'
 				},
 				
         methods: {
-          goTo(noteTitle) {
-            this.$router.push({ name:'CurrentNote', params:{title: noteTitle} });
+          goTo(noteId, noteTitle) {
+            // this.$router.push({ name:'CurrentNote', params:{title: noteTitle} });
+            this.$router.push({ name:'CurrentNote', params:{id: noteId, title: noteTitle} });
           },
 
           addNote() {
@@ -77,6 +80,6 @@ import modalWindow from './modalWindow'
 <style lang="scss" >
 
   .checked-todo {
-    color: #8de98d;
+    color: #cacaca;
   }
 </style>
