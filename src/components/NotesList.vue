@@ -44,12 +44,12 @@ import modalWindow from './modalWindow'
               showModal: false,
               currentId: ''// хранит id заметки для удаления
             }
-				},
-				computed: {
-					notesList() {
-						return this.$store.getters.NOTES;
+	},
+	computed: {
+	  notesList() {
+	   return this.$store.getters.NOTES;
           },
-				},
+	},
 				
         methods: {
           goTo(noteId, noteTitle) {
