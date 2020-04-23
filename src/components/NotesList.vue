@@ -53,7 +53,6 @@ import modalWindow from './modalWindow'
 				
         methods: {
           goTo(noteId, noteTitle) {
-            // this.$router.push({ name:'CurrentNote', params:{title: noteTitle} });
             this.$router.push({ name:'CurrentNote', params:{id: noteId, title: noteTitle} });
           },
 
